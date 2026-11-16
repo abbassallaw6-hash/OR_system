@@ -1,0 +1,975 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PULSE OR | إدارة العمليات</title>
+
+<style>
+:root {
+  --blue:#1769aa;
+  --dark:#123c60;
+  --light:#eaf4fc;
+  --bg:#f4f8fc;
+  --white:#fff;
+  --text:#24384b;
+  --muted:#718398;
+  --border:#e1eaf2;
+  --green:#15966b;
+  --red:#d94b55;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Tahoma,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+header{
+  background:linear-gradient(120deg,#123c60,#1976b9);
+  color:white;
+  padding:22px 25px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  flex-wrap:wrap;
+}
+.brand h1{margin:0;font-size:25px;letter-spacing:1px}
+.brand p{margin:6px 0 0;color:#d5eaff;font-size:12px}
+.header-label{
+  background:#ffffff20;
+  padding:9px 14px;
+  border-radius:10px;
+  font-size:12px;
+}
+.layout{display:flex;min-height:calc(100vh - 90px)}
+aside{
+  width:225px;
+  background:white;
+  border-left:1px solid var(--border);
+  padding:18px 12px;
+  flex-shrink:0;
+}
+.nav-btn{
+  width:100%;
+  padding:13px 14px;
+  margin-bottom:7px;
+  border:0;
+  border-radius:10px;
+  background:white;
+  color:#52677b;
+  text-align:right;
+  font-size:14px;
+  cursor:pointer;
+  font-family:inherit;
+}
+.nav-btn:hover,.nav-btn.active{
+  background:var(--light);
+  color:var(--blue);
+  font-weight:bold;
+}
+main{flex:1;padding:25px;min-width:0}
+.page{display:none}
+.page.active{display:block}
+.page-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:22px;
+}
+h2{font-size:21px;margin:0;color:var(--dark)}
+.muted{color:var(--muted);font-size:12px;margin-top:7px}
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;
+  margin-bottom:22px;
+}
+.stat,.panel{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:18px;
+}
+.stat span{font-size:12px;color:var(--muted)}
+.stat strong{display:block;font-size:27px;margin-top:12px;color:var(--blue)}
+.panel{margin-bottom:18px}
+.panel h3{margin:0 0 16px;font-size:15px}
+button{font-family:inherit}
+.primary{
+  background:var(--blue);
+  color:white;
+  border:0;
+  padding:11px 16px;
+  border-radius:9px;
+  cursor:pointer;
+  font-size:13px;
+}
+.primary:hover{background:var(--dark)}
+.secondary{
+  background:var(--light);
+  color:var(--blue);
+  border:0;
+  padding:10px 13px;
+  border-radius:9px;
+  cursor:pointer;
+}
+.danger{
+  background:#fff0f0;
+  color:var(--red);
+  border:0;
+  padding:8px 10px;
+  border-radius:7px;
+  cursor:pointer;
+}
+.search{
+  width:100%;
+  max-width:320px;
+  padding:11px;
+  border:1px solid var(--border);
+  border-radius:9px;
+  outline:none;
+  font-family:inherit;
+}
+.search:focus,input:focus,select:focus,textarea:focus{
+  border-color:var(--blue);
+}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th,td{
+  text-align:right;
+  padding:13px 10px;
+  border-bottom:1px solid var(--border);
+  font-size:12px;
+}
+th{color:var(--muted);background:#f8fbfe}
+td{color:var(--text)}
+.empty{text-align:center;padding:28px;color:var(--muted)}
+.actions{display:flex;gap:6px}
+.small-btn{
+  border:0;
+  border-radius:7px;
+  padding:7px 9px;
+  cursor:pointer;
+  background:var(--light);
+  color:var(--blue);
+  font-size:11px;
+}
+.status{
+  display:inline-block;
+  border-radius:20px;
+  padding:5px 9px;
+  font-size:11px;
+  background:#e8f7f0;
+  color:var(--green);
+}
+.status.pending{background:#fff5df;color:#a46b00}
+.status.cancelled{background:#fff0f0;color:var(--red)}
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#10283c88;
+  z-index:10;
+  padding:15px;
+  overflow-y:auto;
+  align-items:center;
+  justify-content:center;
+}
+.modal.show{display:flex}
+.modal-box{
+  background:white;
+  width:100%;
+  max-width:620px;
+  border-radius:16px;
+  padding:23px;
+  max-height:95vh;
+  overflow-y:auto;
+}
+.modal-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
+}
+.close{
+  border:0;
+  background:#f1f5f9;
+  border-radius:8px;
+  padding:7px 11px;
+  cursor:pointer;
+}
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:13px;
+}
+.field{display:flex;flex-direction:column;gap:7px}
+.field.full{grid-column:1/-1}
+label{font-size:12px;color:#52677b}
+input,select,textarea{
+  width:100%;
+  padding:11px;
+  border:1px solid var(--border);
+  border-radius:9px;
+  font-family:inherit;
+  background:white;
+  outline:none;
+  font-size:13px;
+}
+textarea{min-height:75px;resize:vertical}
+.form-actions{
+  display:flex;
+  gap:9px;
+  margin-top:18px;
+}
+.notice{
+  background:#fff8e7;
+  border:1px solid #f2dfac;
+  color:#795b16;
+  padding:12px;
+  border-radius:10px;
+  font-size:12px;
+  line-height:1.8;
+  margin-bottom:18px;
+}
+footer{
+  text-align:center;
+  color:#91a1b1;
+  padding:25px 10px;
+  font-size:11px;
+}
+@media(max-width:850px){
+  .layout{display:block}
+  aside{
+    width:100%;
+    display:flex;
+    overflow-x:auto;
+    border-left:0;
+    border-bottom:1px solid var(--border);
+    padding:9px;
+    gap:5px;
+  }
+  .nav-btn{
+    width:auto;
+    white-space:nowrap;
+    margin:0;
+    padding:11px 13px;
+  }
+  main{padding:16px}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:480px){
+  .form-grid{grid-template-columns:1fr}
+  .field.full{grid-column:auto}
+  header{padding:17px}
+  .brand h1{font-size:21px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">
+    <h1>PULSE OR</h1>
+    <p>OPERATING ROOM MANAGEMENT SYSTEM</p>
+  </div>
+  <div class="header-label">DESIGN PULSE · BY ABBASS ALLAW</div>
+</header>
+
+<div class="layout">
+
+<aside>
+  <button class="nav-btn active" onclick="showPage('dashboard',this)">⌂ لوحة التحكم</button>
+  <button class="nav-btn" onclick="showPage('operations',this)">▣ العمليات</button>
+  <button class="nav-btn" onclick="showPage('patients',this)">♙ المرضى</button>
+  <button class="nav-btn" onclick="showPage('staff',this)">⚕ الطاقم الطبي</button>
+  <button class="nav-btn" onclick="showPage('rooms',this)">▦ غرف العمليات</button>
+  <button class="nav-btn" onclick="showPage('backup',this)">⚙ النسخ الاحتياطي</button>
+</aside>
+
+<main>
+
+<!-- DASHBOARD -->
+<section class="page active" id="dashboard">
+  <div class="page-title">
+    <div>
+      <h2>لوحة التحكم</h2>
+      <div class="muted">نظرة عامة على قسم العمليات</div>
+    </div>
+    <button class="primary" onclick="openOperation()">+ تسجيل عملية</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><span>إجمالي العمليات</span><strong id="totalOps">0</strong></div>
+    <div class="stat"><span>عدد المرضى</span><strong id="totalPatients">0</strong></div>
+    <div class="stat"><span>العمليات المكتملة</span><strong id="doneOps">0</strong></div>
+    <div class="stat"><span>العمليات المجدولة</span><strong id="pendingOps">0</strong></div>
+  </div>
+
+  <div class="panel">
+    <h3>آخر العمليات المسجلة</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>كود العملية</th><th>اسم العملية</th><th>المريض</th><th>التاريخ</th><th>الحالة</th></tr>
+        </thead>
+        <tbody id="recentOps"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- OPERATIONS -->
+<section class="page" id="operations">
+  <div class="page-title">
+    <div>
+      <h2>إدارة العمليات</h2>
+      <div class="muted">تسجيل ومتابعة العمليات الجراحية</div>
+    </div>
+    <button class="primary" onclick="openOperation()">+ عملية جديدة</button>
+  </div>
+
+  <div class="panel">
+    <input class="search" id="operationSearch" placeholder="ابحث بالكود أو اسم العملية أو المريض..." oninput="renderOperations()">
+    <div class="table-wrap" style="margin-top:15px">
+      <table>
+        <thead>
+          <tr>
+            <th>الكود</th><th>اسم العملية</th><th>المريض</th>
+            <th>الجراح</th><th>التخدير</th><th>التاريخ</th>
+            <th>الغرفة</th><th>الحالة</th><th>إجراءات</th>
+          </tr>
+        </thead>
+        <tbody id="operationsTable"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- PATIENTS -->
+<section class="page" id="patients">
+  <div class="page-title">
+    <div>
+      <h2>ملفات المرضى</h2>
+      <div class="muted">إضافة المرضى وإدارة ملفاتهم</div>
+    </div>
+    <button class="primary" onclick="openPatient()">+ مريض جديد</button>
+  </div>
+  <div class="panel">
+    <input class="search" id="patientSearch" placeholder="ابحث باسم المريض أو رقم الملف..." oninput="renderPatients()">
+    <div class="table-wrap" style="margin-top:15px">
+      <table>
+        <thead>
+          <tr><th>رقم الملف</th><th>اسم المريض</th><th>العمر</th><th>الجنس</th><th>الهاتف</th><th>إجراءات</th></tr>
+        </thead>
+        <tbody id="patientsTable"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- STAFF -->
+<section class="page" id="staff">
+  <div class="page-title">
+    <div>
+      <h2>الطاقم الطبي</h2>
+      <div class="muted">إدارة أسماء الجراحين وأطباء التخدير</div>
+    </div>
+    <button class="primary" onclick="openStaff()">+ إضافة عضو</button>
+  </div>
+  <div class="panel">
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>الاسم</th><th>الاختصاص</th><th>إجراءات</th></tr></thead>
+        <tbody id="staffTable"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ROOMS -->
+<section class="page" id="rooms">
+  <div class="page-title">
+    <div>
+      <h2>غرف العمليات</h2>
+      <div class="muted">إدارة غرف العمليات المتاحة</div>
+    </div>
+    <button class="primary" onclick="addRoom()">+ إضافة غرفة</button>
+  </div>
+  <div class="panel">
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>اسم الغرفة</th><th>إجراءات</th></tr></thead>
+        <tbody id="roomsTable"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- BACKUP -->
+<section class="page" id="backup">
+  <div class="page-title">
+    <div>
+      <h2>النسخ الاحتياطي</h2>
+      <div class="muted">تصدير أو استيراد بيانات البرنامج</div>
+    </div>
+  </div>
+  <div class="notice">
+    تنبيه: هذه نسخة أولية تحفظ البيانات داخل المتصفح على الجهاز نفسه. لا تستخدمها لحفظ بيانات مرضى حقيقية أو معلومات طبية حساسة. النسخ الاحتياطي هنا ليس بديلاً عن قاعدة بيانات آمنة.
+  </div>
+  <div class="panel">
+    <h3>تصدير البيانات</h3>
+    <p class="muted">احفظ نسخة من بيانات البرنامج على جهازك بصيغة JSON.</p>
+    <button class="primary" onclick="exportData()">تنزيل النسخة الاحتياطية</button>
+  </div>
+  <div class="panel">
+    <h3>استيراد البيانات</h3>
+    <p class="muted">استعادة نسخة احتياطية سابقة.</p>
+    <input type="file" id="importFile" accept=".json,application/json">
+    <button class="secondary" style="margin-top:12px" onclick="importData()">استيراد البيانات</button>
+  </div>
+  <div class="panel">
+    <h3>إعادة ضبط البرنامج</h3>
+    <p class="muted">حذف جميع البيانات التجريبية المحفوظة في هذا المتصفح.</p>
+    <button class="danger" onclick="resetData()">حذف جميع البيانات</button>
+  </div>
+</section>
+
+<footer>
+  PULSE OR · DESIGN PULSE · BY ABBASS ALLAW
+</footer>
+
+</main>
+</div>
+
+<!-- PATIENT MODAL -->
+<div class="modal" id="patientModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="patientModalTitle">إضافة مريض</h3>
+      <button class="close" onclick="closeModal('patientModal')">✕</button>
+    </div>
+    <form id="patientForm">
+      <input type="hidden" id="patientId">
+      <div class="form-grid">
+        <div class="field">
+          <label>رقم الملف</label>
+          <input id="pCode" required placeholder="مثلاً P-001">
+        </div>
+        <div class="field">
+          <label>اسم المريض</label>
+          <input id="pName" required>
+        </div>
+        <div class="field">
+          <label>العمر</label>
+          <input id="pAge" type="number" min="0">
+        </div>
+        <div class="field">
+          <label>الجنس</label>
+          <select id="pGender">
+            <option value="">اختر</option>
+            <option>ذكر</option>
+            <option>أنثى</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label>رقم الهاتف</label>
+          <input id="pPhone" type="tel">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="primary" type="submit">حفظ المريض</button>
+        <button class="secondary" type="button" onclick="closeModal('patientModal')">إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- OPERATION MODAL -->
+<div class="modal" id="operationModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="operationModalTitle">تسجيل عملية جديدة</h3>
+      <button class="close" onclick="closeModal('operationModal')">✕</button>
+    </div>
+    <form id="operationForm">
+      <input type="hidden" id="operationId">
+      <div class="form-grid">
+        <div class="field">
+          <label>كود العملية</label>
+          <input id="oCode" required placeholder="OR-001">
+        </div>
+        <div class="field">
+          <label>اسم العملية</label>
+          <input id="oName" required placeholder="مثلاً Appendectomy">
+        </div>
+        <div class="field full">
+          <label>المريض</label>
+          <select id="oPatient" required></select>
+        </div>
+        <div class="field">
+          <label>اسم الجراح</label>
+          <select id="oSurgeon"></select>
+        </div>
+        <div class="field">
+          <label>اسم طبيب التخدير</label>
+          <select id="oAnesthetist"></select>
+        </div>
+        <div class="field">
+          <label>نوع التخدير</label>
+          <select id="oAnesthesia">
+            <option value="">اختر نوع التخدير</option>
+            <option>General Anesthesia</option>
+            <option>Spinal Anesthesia</option>
+            <option>Local Anesthesia</option>
+            <option>Regional Anesthesia</option>
+            <option>Sedation</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>غرفة العمليات</label>
+          <select id="oRoom"></select>
+        </div>
+        <div class="field">
+          <label>التاريخ</label>
+          <input id="oDate" type="date" required>
+        </div>
+        <div class="field">
+          <label>وقت البداية</label>
+          <input id="oTime" type="time">
+        </div>
+        <div class="field">
+          <label>حالة العملية</label>
+          <select id="oStatus">
+            <option>مجدولة</option>
+            <option>قيد التنفيذ</option>
+            <option>مكتملة</option>
+            <option>ملغاة</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label>ملاحظات إدارية</label>
+          <textarea id="oNotes" placeholder="ملاحظات..."></textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="primary" type="submit">حفظ العملية</button>
+        <button class="secondary" type="button" onclick="closeModal('operationModal')">إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- STAFF MODAL -->
+<div class="modal" id="staffModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>إضافة عضو للطاقم الطبي</h3>
+      <button class="close" onclick="closeModal('staffModal')">✕</button>
+    </div>
+    <form id="staffForm">
+      <div class="form-grid">
+        <div class="field full">
+          <label>الاسم الكامل</label>
+          <input id="staffName" required>
+        </div>
+        <div class="field full">
+          <label>الاختصاص</label>
+          <select id="staffRole">
+            <option>جراح</option>
+            <option>طبيب تخدير</option>
+            <option>ممرض عمليات</option>
+            <option>أخرى</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="primary" type="submit">حفظ</button>
+        <button class="secondary" type="button" onclick="closeModal('staffModal')">إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+const KEY = "PULSE_OR_DATA_V1";
+
+let data = {
+  patients: [],
+  operations: [],
+  staff: [],
+  rooms: ["OR 1","OR 2","OR 3"]
+};
+
+function loadData(){
+  try{
+    const saved = localStorage.getItem(KEY);
+    if(saved){
+      const parsed = JSON.parse(saved);
+      data = {
+        patients:Array.isArray(parsed.patients)?parsed.patients:[],
+        operations:Array.isArray(parsed.operations)?parsed.operations:[],
+        staff:Array.isArray(parsed.staff)?parsed.staff:[],
+        rooms:Array.isArray(parsed.rooms)?parsed.rooms:["OR 1","OR 2","OR 3"]
+      };
+    }
+  }catch(e){
+    alert("تعذر قراءة البيانات المحفوظة.");
+  }
+}
+
+function saveData(){
+  try{
+    localStorage.setItem(KEY,JSON.stringify(data));
+  }catch(e){
+    alert("تعذر حفظ البيانات. قد تكون مساحة التخزين ممتلئة.");
+  }
+}
+
+function id(){
+  return Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+}
+
+function esc(value){
+  return String(value??"").replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
+}
+
+function showPage(page,button){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(page).classList.add("active");
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+  if(button)button.classList.add("active");
+  renderAll();
+}
+
+function openModal(name){
+  document.getElementById(name).classList.add("show");
+}
+function closeModal(name){
+  document.getElementById(name).classList.remove("show");
+}
+
+function renderAll(){
+  renderDashboard();
+  renderPatients();
+  renderOperations();
+  renderStaff();
+  renderRooms();
+}
+
+function renderDashboard(){
+  document.getElementById("totalOps").textContent=data.operations.length;
+  document.getElementById("totalPatients").textContent=data.patients.length;
+  document.getElementById("doneOps").textContent=data.operations.filter(o=>o.status==="مكتملة").length;
+  document.getElementById("pendingOps").textContent=data.operations.filter(o=>o.status==="مجدولة").length;
+
+  const recent=[...data.operations].sort((a,b)=>(b.date||"").localeCompare(a.date||"")).slice(0,6);
+  document.getElementById("recentOps").innerHTML=recent.length?recent.map(o=>`
+    <tr>
+      <td>${esc(o.code)}</td>
+      <td>${esc(o.name)}</td>
+      <td>${esc(patientName(o.patient))}</td>
+      <td>${esc(o.date)}</td>
+      <td>${statusHTML(o.status)}</td>
+    </tr>`).join(""):`<tr><td colspan="5" class="empty">لا توجد عمليات مسجلة بعد</td></tr>`;
+}
+
+function patientName(patientId){
+  return data.patients.find(p=>p.id===patientId)?.name || "غير محدد";
+}
+
+function statusHTML(status){
+  let cls=status==="ملغاة"?"cancelled":status==="مجدولة"?"pending":"";
+  return `<span class="status ${cls}">${esc(status||"غير محدد")}</span>`;
+}
+
+function renderPatients(){
+  const q=(document.getElementById("patientSearch")?.value||"").toLowerCase();
+  const list=data.patients.filter(p=>
+    [p.code,p.name,p.phone].some(v=>String(v||"").toLowerCase().includes(q))
+  );
+  document.getElementById("patientsTable").innerHTML=list.length?list.map(p=>`
+    <tr>
+      <td>${esc(p.code)}</td>
+      <td>${esc(p.name)}</td>
+      <td>${esc(p.age||"-")}</td>
+      <td>${esc(p.gender||"-")}</td>
+      <td>${esc(p.phone||"-")}</td>
+      <td><div class="actions">
+        <button class="small-btn" onclick="editPatient('${p.id}')">تعديل</button>
+        <button class="danger" onclick="deletePatient('${p.id}')">حذف</button>
+      </div></td>
+    </tr>`).join(""):`<tr><td colspan="6" class="empty">لا يوجد مرضى</td></tr>`;
+}
+
+function openPatient(p=null){
+  document.getElementById("patientForm").reset();
+  document.getElementById("patientId").value=p?.id||"";
+  document.getElementById("patientModalTitle").textContent=p?"تعديل بيانات المريض":"إضافة مريض";
+  document.getElementById("pCode").value=p?.code||"";
+  document.getElementById("pName").value=p?.name||"";
+  document.getElementById("pAge").value=p?.age||"";
+  document.getElementById("pGender").value=p?.gender||"";
+  document.getElementById("pPhone").value=p?.phone||"";
+  openModal("patientModal");
+}
+
+function editPatient(id){
+  const p=data.patients.find(x=>x.id===id);
+  if(p)openPatient(p);
+}
+
+document.getElementById("patientForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const pid=document.getElementById("patientId").value;
+  const record={
+    id:pid||id(),
+    code:document.getElementById("pCode").value.trim(),
+    name:document.getElementById("pName").value.trim(),
+    age:document.getElementById("pAge").value,
+    gender:document.getElementById("pGender").value,
+    phone:document.getElementById("pPhone").value.trim()
+  };
+  if(data.patients.some(p=>p.code===record.code&&p.id!==pid)){
+    alert("رقم الملف مستخدم من قبل.");
+    return;
+  }
+  if(pid)data.patients=data.patients.map(p=>p.id===pid?record:p);
+  else data.patients.push(record);
+  saveData();
+  closeModal("patientModal");
+  renderAll();
+});
+
+function deletePatient(pid){
+  if(data.operations.some(o=>o.patient===pid)){
+    alert("لا يمكن حذف مريض مرتبط بعملية. عدّل سجل العملية أولاً.");
+    return;
+  }
+  if(confirm("هل تريد حذف ملف المريض؟")){
+    data.patients=data.patients.filter(p=>p.id!==pid);
+    saveData();renderAll();
+  }
+}
+
+function fillOperationOptions(){
+  const patient=document.getElementById("oPatient");
+  const surgeon=document.getElementById("oSurgeon");
+  const anesthetist=document.getElementById("oAnesthetist");
+  const room=document.getElementById("oRoom");
+
+  patient.innerHTML='<option value="">اختر المريض</option>'+data.patients.map(p=>
+    `<option value="${p.id}">${esc(p.name)} (${esc(p.code)})</option>`).join("");
+
+  surgeon.innerHTML='<option value="">اختر الجراح</option>'+data.staff.filter(s=>s.role==="جراح").map(s=>
+    `<option>${esc(s.name)}</option>`).join("");
+
+  anesthetist.innerHTML='<option value="">اختر طبيب التخدير</option>'+data.staff.filter(s=>s.role==="طبيب تخدير").map(s=>
+    `<option>${esc(s.name)}</option>`).join("");
+
+  room.innerHTML='<option value="">اختر الغرفة</option>'+data.rooms.map(r=>
+    `<option>${esc(r)}</option>`).join("");
+}
+
+function openOperation(o=null){
+  if(!data.patients.length){
+    alert("أضف ملف مريض أولاً قبل تسجيل العملية.");
+    showPage("patients",document.querySelectorAll(".nav-btn")[2]);
+    return;
+  }
+  document.getElementById("operationForm").reset();
+  fillOperationOptions();
+  document.getElementById("operationId").value=o?.id||"";
+  document.getElementById("operationModalTitle").textContent=o?"تعديل العملية":"تسجيل عملية جديدة";
+  document.getElementById("oCode").value=o?.code||"";
+  document.getElementById("oName").value=o?.name||"";
+  document.getElementById("oPatient").value=o?.patient||"";
+  document.getElementById("oSurgeon").value=o?.surgeon||"";
+  document.getElementById("oAnesthetist").value=o?.anesthetist||"";
+  document.getElementById("oAnesthesia").value=o?.anesthesia||"";
+  document.getElementById("oRoom").value=o?.room||"";
+  document.getElementById("oDate").value=o?.date||new Date().toISOString().slice(0,10);
+  document.getElementById("oTime").value=o?.time||"";
+  document.getElementById("oStatus").value=o?.status||"مجدولة";
+  document.getElementById("oNotes").value=o?.notes||"";
+  openModal("operationModal");
+}
+
+function renderOperations(){
+  const q=(document.getElementById("operationSearch")?.value||"").toLowerCase();
+  const list=data.operations.filter(o=>
+    [o.code,o.name,patientName(o.patient),o.surgeon,o.anesthetist].some(v=>String(v||"").toLowerCase().includes(q))
+  );
+  document.getElementById("operationsTable").innerHTML=list.length?list.map(o=>`
+    <tr>
+      <td>${esc(o.code)}</td>
+      <td>${esc(o.name)}</td>
+      <td>${esc(patientName(o.patient))}</td>
+      <td>${esc(o.surgeon||"-")}</td>
+      <td>${esc(o.anesthesia||"-")}</td>
+      <td>${esc(o.date)}</td>
+      <td>${esc(o.room||"-")}</td>
+      <td>${statusHTML(o.status)}</td>
+      <td><div class="actions">
+        <button class="small-btn" onclick="editOperation('${o.id}')">تعديل</button>
+        <button class="danger" onclick="deleteOperation('${o.id}')">حذف</button>
+      </div></td>
+    </tr>`).join(""):`<tr><td colspan="9" class="empty">لا توجد عمليات</td></tr>`;
+}
+
+function editOperation(oid){
+  const o=data.operations.find(x=>x.id===oid);
+  if(o)openOperation(o);
+}
+
+document.getElementById("operationForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const oid=document.getElementById("operationId").value;
+  const record={
+    id:oid||id(),
+    code:document.getElementById("oCode").value.trim(),
+    name:document.getElementById("oName").value.trim(),
+    patient:document.getElementById("oPatient").value,
+    surgeon:document.getElementById("oSurgeon").value,
+    anesthetist:document.getElementById("oAnesthetist").value,
+    anesthesia:document.getElementById("oAnesthesia").value,
+    room:document.getElementById("oRoom").value,
+    date:document.getElementById("oDate").value,
+    time:document.getElementById("oTime").value,
+    status:document.getElementById("oStatus").value,
+    notes:document.getElementById("oNotes").value.trim()
+  };
+  if(data.operations.some(o=>o.code===record.code&&o.id!==oid)){
+    alert("كود العملية مستخدم من قبل.");
+    return;
+  }
+  if(oid)data.operations=data.operations.map(o=>o.id===oid?record:o);
+  else data.operations.push(record);
+  saveData();
+  closeModal("operationModal");
+  renderAll();
+});
+
+function deleteOperation(oid){
+  if(confirm("هل تريد حذف سجل العملية؟")){
+    data.operations=data.operations.filter(o=>o.id!==oid);
+    saveData();renderAll();
+  }
+}
+
+function openStaff(){
+  document.getElementById("staffForm").reset();
+  openModal("staffModal");
+}
+
+document.getElementById("staffForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  data.staff.push({
+    id:id(),
+    name:document.getElementById("staffName").value.trim(),
+    role:document.getElementById("staffRole").value
+  });
+  saveData();
+  closeModal("staffModal");
+  renderAll();
+});
+
+function renderStaff(){
+  document.getElementById("staffTable").innerHTML=data.staff.length?data.staff.map(s=>`
+    <tr>
+      <td>${esc(s.name)}</td>
+      <td>${esc(s.role)}</td>
+      <td><button class="danger" onclick="deleteStaff('${s.id}')">حذف</button></td>
+    </tr>`).join(""):`<tr><td colspan="3" class="empty">لا يوجد أعضاء في الطاقم</td></tr>`;
+}
+
+function deleteStaff(sid){
+  if(confirm("هل تريد حذف هذا العضو؟")){
+    data.staff=data.staff.filter(s=>s.id!==sid);
+    saveData();renderAll();
+  }
+}
+
+function addRoom(){
+  const name=prompt("اكتب اسم غرفة العمليات:");
+  if(!name||!name.trim())return;
+  if(data.rooms.includes(name.trim())){
+    alert("هذه الغرفة موجودة مسبقاً.");return;
+  }
+  data.rooms.push(name.trim());
+  saveData();renderAll();
+}
+
+function renderRooms(){
+  document.getElementById("roomsTable").innerHTML=data.rooms.length?data.rooms.map(r=>`
+    <tr>
+      <td>${esc(r)}</td>
+      <td><button class="danger" onclick="deleteRoom('${encodeURIComponent(r)}')">حذف</button></td>
+    </tr>`).join(""):`<tr><td colspan="2" class="empty">لا توجد غرف</td></tr>`;
+}
+
+function deleteRoom(encoded){
+  const room=decodeURIComponent(encoded);
+  if(data.operations.some(o=>o.room===room)){
+    alert("هذه الغرفة مرتبطة بعملية مسجلة.");
+    return;
+  }
+  if(confirm("هل تريد حذف الغرفة؟")){
+    data.rooms=data.rooms.filter(r=>r!==room);
+    saveData();renderAll();
+  }
+}
+
+function exportData(){
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download="PULSE-OR-backup.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importData(){
+  const file=document.getElementById("importFile").files[0];
+  if(!file){alert("اختر ملف النسخة الاحتياطية أولاً.");return;}
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const imported=JSON.parse(reader.result);
+      if(!imported||!Array.isArray(imported.patients)||!Array.isArray(imported.operations)||!Array.isArray(imported.staff)||!Array.isArray(imported.rooms)){
+        throw new Error("Invalid backup");
+      }
+      if(!confirm("سيتم استبدال البيانات الحالية بالنسخة المستوردة. هل تريد المتابعة؟"))return;
+      data=imported;
+      saveData();renderAll();
+      alert("تم استيراد النسخة الاحتياطية.");
+    }catch(e){
+      alert("ملف النسخة الاحتياطية غير صالح.");
+    }
+  };
+  reader.readAsText(file);
+}
+
+function resetData(){
+  if(confirm("تحذير: سيتم حذف جميع البيانات المحفوظة في هذا المتصفح. هل أنت متأكد؟")){
+    data={patients:[],operations:[],staff:[],rooms:["OR 1","OR 2","OR 3"]};
+    saveData();renderAll();
+  }
+}
+
+loadData();
+renderAll();
+</script>
+
+</body>
+</html>
